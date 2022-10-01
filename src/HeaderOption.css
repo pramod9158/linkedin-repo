@@ -1,0 +1,14 @@
+.headerOption{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 20px;
+    color: grey;
+    cursor: pointer;
+
+}
+
+.headerOption:hover{
+    color: black;
+}
+
