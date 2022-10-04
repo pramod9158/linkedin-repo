@@ -10,14 +10,17 @@ import Post from './Post';
 import { SettingsInputCompositeSharp } from '@mui/icons-material';
 import {db} from "./firebase"
 import firebase from 'firebase/compat/app';
-
+import { selectUser } from './features/userSlice';
+import { useSelector } from 'react-redux';
+import FlipMove from "react-flip-move"
 
 function Feed() {
+    const user=useSelector(selectUser);
     const [input, setInput] = useState()
     const [posts, setposts] = useState([]);
 
 useEffect(()=>{
-    db.collection("posts").onSnapshot((snapshot)=>
+    db.collection("posts").orderBy('timestamp','desc').onSnapshot((snapshot)=>
     setposts(
         snapshot.docs.map((doc)=>(
             {
@@ -32,12 +35,16 @@ useEffect(()=>{
 const sendPost=(e)=>{
 e.preventDefault();
 db.collection('posts').add({
-    name:'Pramod Patil',
-    description:'this is a test',
+    name:user.displayName,
+    description:user.email,
     message:input,
-    photoUrl:'',
+    photoUrl:user.photoUrl || "",
     timestamp:firebase.firestore.FieldValue.serverTimestamp()
 })
+
+
+setInput("");
+
 
 };
 
@@ -59,6 +66,7 @@ db.collection('posts').add({
                 </div>
 
             </div>
+            <FlipMove>
             {posts.map(({id,data:{name,description,message,photoUrl }} ) => (
             <Post
             key={id}
@@ -69,7 +77,7 @@ db.collection('posts').add({
             />
 ))} 
       
-      
+   </FlipMove>
         </div>
 
     )
